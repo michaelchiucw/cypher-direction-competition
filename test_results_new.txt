@@ -1,0 +1,41 @@
+..F.......F..F..
+======================================================================
+FAIL: test_correct_query_anonymous_nodes (src.test_QueryCorrector.TestNewImplementation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/src/test_QueryCorrector.py", line 315, in test_correct_query_anonymous_nodes
+    self.assertEqual(self.corrector.correct_query(query1_orig), query1_expected)
+AssertionError: 'MATCH (:Company)-[:WORKS_AT]->(:Person)' != 'MATCH (:Company)<-[:WORKS_AT]-(:Person)'
+- MATCH (:Company)-[:WORKS_AT]->(:Person)
+?                              -
++ MATCH (:Company)<-[:WORKS_AT]-(:Person)
+?                 +
+
+
+======================================================================
+FAIL: test_detect_node_variables (src.test_QueryCorrector.TestNewImplementation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/src/test_QueryCorrector.py", line 157, in test_detect_node_variables
+    self.assertIn("p", detected_vars11)
+AssertionError: 'p' not found in {'p  ': ['  Person   ', ' User']}
+
+======================================================================
+FAIL: test_load_schemas (src.test_QueryCorrector.TestNewImplementation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/src/test_QueryCorrector.py", line 41, in test_load_schemas
+    self.assertEqual(self.module_to_test.load_schemas("(,,)"), [])
+AssertionError: Lists differ: [Schema(left_node='', relation='', right_node='')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+Schema(left_node='', relation='', right_node='')
+
+- [Schema(left_node='', relation='', right_node='')]
++ []
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.018s
+
+FAILED (failures=3)
