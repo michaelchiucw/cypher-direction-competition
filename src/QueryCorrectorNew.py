@@ -445,20 +445,24 @@ class QueryCorrector:
                     # Now, check if nodes are anonymous before actually flipping
                     left_var = self._get_variable_from_node_content(ln_content)
                     right_var = self._get_variable_from_node_content(rn_content)
-                    if left_var and right_var: # Both must be named to allow flip
-                        corrected_rel_str = "<" + rel_str[:-1]
+                    # The condition below prevented correction for anonymous nodes.
+                    # Removing it allows correction based solely on schema validation.
+                    # if left_var and right_var: # Both must be named to allow flip
+                    corrected_rel_str = "<" + rel_str[:-1]
                     # Else: one or both nodes are anonymous, do not flip. corrected_rel_str remains None.
                 else: # Flipped direction is also invalid by schema
                     raise QueryCorrector._UncorrectablePathError("Outgoing path segment uncorrectable.")
-        elif relation_direction == "INCOMING": 
+        elif relation_direction == "INCOMING":
             if not self.verify_schema(right_node_labels, relation_types, left_node_labels): # Original direction invalid
                 # Check if flip is possible by schema
                 if self.verify_schema(left_node_labels, relation_types, right_node_labels): # Flipped direction IS valid by schema
                     # Now, check if nodes are anonymous before actually flipping
                     left_var = self._get_variable_from_node_content(ln_content)
                     right_var = self._get_variable_from_node_content(rn_content)
-                    if left_var and right_var: # Both must be named to allow flip
-                        corrected_rel_str = rel_str[1:] + ">"
+                    # The condition below prevented correction for anonymous nodes.
+                    # Removing it allows correction based solely on schema validation.
+                    # if left_var and right_var: # Both must be named to allow flip
+                    corrected_rel_str = rel_str[1:] + ">"
                     # Else: one or both nodes are anonymous, do not flip. corrected_rel_str remains None.
                 else: # Flipped direction is also invalid by schema
                     raise QueryCorrector._UncorrectablePathError("Incoming path segment uncorrectable.")
