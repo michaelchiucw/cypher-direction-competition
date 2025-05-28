@@ -13,6 +13,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 class _QueryCorrectorTestCase(unittest.TestCase):
     # MODULE_UNDER_TEST_NAME will be set by subclasses
     MODULE_UNDER_TEST_NAME: str = ""
+    # CLASS_NAME will be set by subclasses if the class is not named QueryCorrector
+    CLASS_NAME: str = "QueryCorrector"
 
     def setUp(self):
         """Set up a QueryCorrector instance with a fixed set of schemas for tests."""
@@ -21,7 +23,8 @@ class _QueryCorrectorTestCase(unittest.TestCase):
 
         self.module_to_test = importlib.import_module(self.MODULE_UNDER_TEST_NAME)
         
-        QueryCorrectorCls = self.module_to_test.QueryCorrector
+        # Get the corrector class, which might have a different name in different modules
+        QueryCorrectorCls = getattr(self.module_to_test, self.CLASS_NAME)
         self.Schema = self.module_to_test.Schema # Store SchemaCls as self.Schema
 
         self.schemas = [
@@ -343,7 +346,7 @@ class _QueryCorrectorTestCase(unittest.TestCase):
         schemas = self.module_to_test.load_schemas(schemas_str)
         
         # Get QueryCorrector class from the dynamically loaded module
-        QueryCorrectorCls = self.module_to_test.QueryCorrector
+        QueryCorrectorCls = getattr(self.module_to_test, self.CLASS_NAME)
         corrector = QueryCorrectorCls(schemas)
 
         query = "MATCH (n1:label1)-[r1:type1]->(n2:label2)-[r2:type2]->(n3:label3) RETURN n1, n2, n3"
@@ -362,6 +365,10 @@ class TestOriginalImplementation(_QueryCorrectorTestCase):
 
 class TestNewImplementation(_QueryCorrectorTestCase):
     MODULE_UNDER_TEST_NAME = "src.QueryCorrectorNew"
+    
+class TestCypherImplementation(_QueryCorrectorTestCase):
+    MODULE_UNDER_TEST_NAME = "src.cypher_corrector"
+    CLASS_NAME = "CypherQueryCorrector"
 
 if __name__ == '__main__':
     unittest.main()
